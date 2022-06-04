@@ -1,0 +1,18 @@
+.login{
+  background-color: #004a8c;
+  position: relative;
+  &__card{
+    max-width: 360px;
+    margin-inline: auto;
+  }
+  &__title{
+    color: #004a8c;
+  }
+  &__btn{
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+    transition: all .25s;
+    &:hover{
+      box-shadow: 0 1rem 3rem rgba(0,0,0,.175);
+    }
+  }
+}
