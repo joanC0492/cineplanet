@@ -34,25 +34,27 @@ function Login() {
     }
   };
 
-  const handleGoogleSignIn = async() => {
+  const handleGoogleSignIn = async () => {
     try {
       await loginWithGoogle();
-      navigate("/");      
+      navigate("/");
     } catch (e) {
-      console.log("error",e.message)
+      console.log("error", e.message);
     }
   };
 
-  const handleResetPassword = async(event)=>{
+  const handleResetPassword = async (event) => {
     event.preventDefault();
     if (!user.email) return setError("Por favor ingrese su Email");
     try {
       await resetPassword(user.email);
-      setError("Te enviamos un enlace a tu correo para restablecer tu contraseña");
+      setError(
+        "Te enviamos un enlace a tu correo para restablecer tu contraseña"
+      );
     } catch (error) {
       setError(error.message);
     }
-  }
+  };
 
   return (
     <>
@@ -86,22 +88,20 @@ function Login() {
                 <Button variant="primary" type="submit" className="me-3">
                   Acceder
                 </Button>
-                <Button
-                  onClick={handleResetPassword}
-                  variant="light"
-                >
+                <Button onClick={handleResetPassword} variant="light">
                   Olvidaste tu contraseña?
                 </Button>
               </div>
             </Form.Group>
             <div>
-              <p>No tienes cuenta? <Link to='/register'>Registrate</Link></p>
+              <p>
+                No tienes cuenta? <Link to="/register">Registrate</Link>
+              </p>
               <Button
                 onClick={handleGoogleSignIn}
                 variant="info"
                 type="button"
-                className="w-100"
-              >
+                className="w-100">
                 Google Login
               </Button>
             </div>
@@ -111,5 +111,5 @@ function Login() {
     </>
   );
 }
-
+// onClick={() => navigate(-1)}
 export { Login };

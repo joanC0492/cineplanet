@@ -2,16 +2,13 @@ import React from "react";
 import logo from "../assets/logo.svg";
 import { Button, Container, Nav, Navbar } from "react-bootstrap";
 import { NavLink, Link } from "react-router-dom";
-import "./NavbarHeader.scss";
 import { useAuth } from "../context/useAuthContext";
-import { useNavigate } from "react-router-dom";
+import "./NavbarHeader.scss";
 
 function NavbarHeader() {
-  const { user, logout } = useAuth();
-  const { navigate } = useNavigate();
+  const { user, logout, invitado } = useAuth();
 
   const handleLogout = async () => {
-    console.log("handleLogout");
     try {
       await logout(); // si devuelve una promesa significa que es asincrono
       // navigate("/login");
@@ -21,14 +18,12 @@ function NavbarHeader() {
     }
   };
 
+  // const handleLogoutInvitado = () => logoutInvitado();
+
   const links = [
     {
-      name: "Inicio",
-      route: "/",
-    },
-    {
       name: "Dulcería",
-      route: "/register",
+      route: "/dulceria",
     },
   ];
 
@@ -57,7 +52,9 @@ function NavbarHeader() {
                   </NavLink>
                 </Nav.Link>
               ))}
-              <Nav.Link as="li">{user?.email}</Nav.Link>
+              <Nav.Link as="li">
+                {user?.email || (invitado ? "Invitado" : "")}
+              </Nav.Link>
               <Nav.Link as="li">
                 {!!user?.email ? (
                   <Button

@@ -12,6 +12,7 @@ import {
   signInWithPopup,
   sendPasswordResetEmail
 } from "firebase/auth";
+import { useLocalStorage } from './useLocalStorage';
 
 const authContext = React.createContext();
 
@@ -24,6 +25,8 @@ const useAuth = ()=> {
 function AuthProvider({children}) {
   const [user,setUser] = React.useState(null);
   const [loading,setLoading] = React.useState(true);
+  // const [invitado, setInvitado] = React.useState(false);
+  const [invitado, setInvitado] = useLocalStorage("INVITADO",false);
 
   const signUp = (email,password) => createUserWithEmailAndPassword(auth,email,password);
 
@@ -37,7 +40,11 @@ function AuthProvider({children}) {
   const resetPassword = (email)=> sendPasswordResetEmail(auth,email);
 
   const logout = ()=> signOut(auth);
+  
+  const loginInvitado = ()=> setInvitado(true);
+  const logoutInvitado = ()=> setInvitado(false);
 
+  console.log(invitado, setInvitado);
   React.useEffect(()=>{
     // console.log("cargado la autenticacion");
     onAuthStateChanged(auth, user=>{
@@ -48,7 +55,7 @@ function AuthProvider({children}) {
   },[]);
 
   return (
-    <authContext.Provider value={{signUp,login,logout,user,loading,loginWithGoogle,resetPassword}}> {/*Este value es como un export para los que usan AuthProvider*/}
+    <authContext.Provider value={{signUp,login,logout,user,loading,loginWithGoogle,resetPassword,invitado,loginInvitado,logoutInvitado}}> {/*Este value es como un export para los que usan AuthProvider*/}
       {children}
     </authContext.Provider>
   )

@@ -1,5 +1,5 @@
 import React from "react";
-import { Alert, Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Alert, Button, Col, Container, Row } from "react-bootstrap";
 import { useAuth } from "../context/useAuthContext";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -8,72 +8,41 @@ import logoGoogle from "../assets/icon-google.svg";
 import "./Login.scss";
 
 function Login() {
-  const [user, setUser] = React.useState({ email: "", password: "" });
   const [error, setError] = React.useState("");
 
-  const { login, loginWithGoogle, resetPassword } = useAuth();
+  const { loginWithGoogle, loginInvitado, logoutInvitado } = useAuth();
   const navigate = useNavigate();
-
-  const handleChange = ({ target: { name, value } }) => {
-    setUser({ ...user, [name]: value });
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      await login(user.email, user.password); // peticion asincrona, toda llamada al backend es asincrona
-      setError("");
-      navigate("/"); // redirecciona al home si no hay error
-    } catch (e) {
-      // error.code - es unico
-      console.error("e.code", e.code);
-      console.error("e.message", e.message);
-      if (e.code === "auth/invalid-email") {
-        setError("Correo Invalido");
-      } else if (e.code === "auth/weak-password") {
-        setError("La contraseña debe tener al menos 6 caracteres");
-      } else {
-        setError(e.message);
-      }
-    }
-  };
-
-  const handleResetPassword = async (event) => {
-    event.preventDefault();
-    if (!user.email) return setError("Por favor ingrese su Email");
-    try {
-      await resetPassword(user.email);
-      setError(
-        "Te enviamos un enlace a tu correo para restablecer tu contraseña"
-      );
-    } catch (error) {
-      setError(error.message);
-    }
-  };
 
   const handleGoogleSignIn = async () => {
     try {
       await loginWithGoogle();
       localStorage.setItem("SHOW_MODAL_LOGIN", 1);
-      navigate("/inicio");
+      logoutInvitado();
+      navigate("/");
     } catch (e) {
       console.log("error", e.message);
       setError(e.message);
     }
   };
 
+  const handleInvitadoSignIn = () => {
+    loginInvitado();
+    navigate("/");
+  };
+
   return (
     <div className="login">
       <div className="position-fixed top-0 start-0 p-3">
-        <Button
-          onClick={() => navigate(-1)}
-          style={{
-            background: "transparent",
-            borderColor: "transparent",
-          }}>
-          <i className="fa-solid fa-angle-left"></i>
-          <span className="d-inline-block ms-2">Atras</span>
-        </Button>
+        <Link to="/">
+          <Button
+            style={{
+              background: "transparent",
+              borderColor: "transparent",
+            }}>
+            <i className="fa-solid fa-angle-left"></i>
+            <span className="d-inline-block ms-2">Atras</span>
+          </Button>
+        </Link>
       </div>
       <Container as="section" className="py-5 vh-100">
         <Row className="h-100">
@@ -98,8 +67,20 @@ function Login() {
                     </span>
                   </div>
                 </Button>
-                <Button variant="light" className="w-100 mt-3 login__btn">
-                  Ingresar como Invitado
+                <Button
+                  onClick={handleInvitadoSignIn}
+                  variant="light"
+                  className="w-100 mt-3 login__btn">
+                  <div className="d-flex align-items-center">
+                    <img
+                      src="https://icons-for-free.com/iconfiles/png/512/customer+customers+filled+person+profile+user+icon-1320184293054755190.png"
+                      alt="invitado"
+                      width="18"
+                    />
+                    <span className="d-inline-block ms-3">
+                      Ingresar como Invitado
+                    </span>
+                  </div>
                 </Button>
               </div>
             </div>

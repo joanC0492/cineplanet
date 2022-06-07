@@ -4,9 +4,10 @@ import { Link } from "react-router-dom";
 import { NavbarHeader } from "../components/NavbarHeader";
 import { useAuth } from "../context/useAuthContext";
 import { Modal } from "../components/Modal";
+import imgEmpty from "../assets/imageAvailable.png";
 import "./inicio.scss";
 
-function getLocalStorage(itemName) {
+const getLocalStorage = (itemName) => {
   const itemLocalStorage = localStorage.getItem(itemName);
   let aux = 0;
   if (!!itemLocalStorage) {
@@ -14,13 +15,12 @@ function getLocalStorage(itemName) {
     localStorage.setItem(itemName, 0);
   }
   return parseInt(aux);
-}
+};
 
 function Inicio() {
   const [premieres, setPremieres] = React.useState();
   const [showModal, setShowModal] = React.useState(false);
-  const { user } = useAuth();
-
+  const { user, invitado } = useAuth();
   const url =
     "http://ec2-3-138-85-219.us-east-2.compute.amazonaws.com:8080/cp/v1/premieres";
 
@@ -40,7 +40,7 @@ function Inicio() {
     setShowModal(!!aux);
     fetchApi();
   }, []);
-  
+
   return (
     <>
       <NavbarHeader />
@@ -61,11 +61,17 @@ function Inicio() {
                     <div className="d-flex align-items-center">
                       <Link
                         className="list-premiere__link"
-                        to={`${user ? "/dulceria" : "/login"}`}>
+                        to={`${
+                          user ? "/dulceria" : invitado ? "/dulceria" : "/login"
+                        }`}>
                         <img
                           src={premiere.image}
                           alt={premiere.description}
                           className="list-premiere__img"
+                          onError={(currentTarget) => {
+                            currentTarget.onerror = null;
+                            currentTarget.src = imgEmpty;
+                          }}
                         />
                       </Link>
                       <span className="h5 ms-2 mb-0 d-inline-block">
